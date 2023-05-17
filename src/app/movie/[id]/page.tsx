@@ -1,6 +1,6 @@
 import styles from "@/app/styles/common.module.css"
 import Image from "next/image";
-export default async function page({ params }: { params: any }) {
+export default async function page({ params }: { params: {id: string} }) {
     const { id } = params;
 
     const url = `https://netflix54.p.rapidapi.com/title/details/?ids=${id}&lang=en`;

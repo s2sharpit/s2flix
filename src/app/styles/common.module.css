@@ -26,6 +26,11 @@
     margin-bottom: 3.2rem;
 }
 
+.activeLink {
+    color: red;
+    font-weight: bold;
+}
+
 .movie_title {
     margin: 3.2rem 0 3.2rem 0;
 }
