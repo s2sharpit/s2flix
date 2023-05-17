@@ -3,6 +3,7 @@
 import styles from "@/app/contact/contact.module.css"
 import { Mulish } from "next/font/google";
 import { useState } from "react";
+import submitContact from "@/app/contact/action";
 const mulish = Mulish({
     subsets: ['latin'],
     display: 'swap',
@@ -11,49 +12,22 @@ const mulish = Mulish({
 
 
 const ContactForm = () => {
-    const [user, setUser] = useState({
-        username: "",
-        email: "",
-        phone: "",
-        message: ""
-    })
     const [status, setStatus] = useState("");
 
-
-    function handleChange(e: any) {
-        const name = e.target.name;
-        const value = e.target.value;
-
-        setUser((prevUser) => ({ ...prevUser, [name]: value }));
-    }
-
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-
+    const handleSubmit = async (formData: FormData) => {
         try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { "Content_Type": "application/json" },
-                body: JSON.stringify({
-                    username: user.username,
-                    email: user.email,
-                    phone: user.phone,
-                    message: user.message
-                })
-            })
-            // Set the status based on the response from the API route
+            const response = await submitContact({
+              username: String(formData.get("username")),
+              email: String(formData.get("email")),
+              phone: Number(formData.get("phone")),
+              message: String(formData.get("message")),
+            });
+            
             if (response.status === 200) {
-                setUser({
-                    username: "",
-                    email: "",
-                    phone: "",
-                    message: ""
-                })
                 setStatus('success');
             } else {
                 setStatus('error');
             }
-
         } catch (e) {
             console.log(e)
         }
@@ -63,15 +37,13 @@ const ContactForm = () => {
 
 
     return (
-        <form className={styles.contact_form} onSubmit={handleSubmit}>
+        <form className={styles.contact_form} action={handleSubmit}>
             <div className={styles.input_field}>
                 <label htmlFor="username" className={styles.label}>
                     Enter your name
                     <input type="text" name="username" id="username"
                         placeholder="Enter your name"
                         className={mulish.className}
-                        value={user.username}
-                        onChange={handleChange}
                         required
                     />
                 </label>
@@ -83,8 +55,6 @@ const ContactForm = () => {
                     <input type="text" name="email" id="email"
                         placeholder="Enter your email"
                         className={mulish.className}
-                        value={user.email}
-                        onChange={handleChange}
                         required
                         autoComplete="off"
                     />
@@ -97,8 +67,6 @@ const ContactForm = () => {
                     <input type="number" name="phone" id="phone"
                         placeholder="Enter your phone"
                         className={mulish.className}
-                        value={user.phone}
-                        onChange={handleChange}
                         required
                         autoComplete="off"
                     />
@@ -111,8 +79,6 @@ const ContactForm = () => {
                     <textarea name="message" id="message" rows={5}
                         placeholder="Enter your Message"
                         className={mulish.className}
-                        value={user.message}
-                        onChange={handleChange}
                         required
                         autoComplete="off"
                     />
